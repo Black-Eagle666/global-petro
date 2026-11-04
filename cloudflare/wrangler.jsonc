@@ -1,0 +1,9 @@
+{
+  // Deployed only from a staging copy made by cloudflare/deploy.sh (never from another project's folder).
+  "name": "global-petro",
+  "main": "worker.js",
+  "compatibility_date": "2026-11-01",
+  "assets": { "directory": "./public", "binding": "ASSETS", "run_worker_first": ["/api/*"] },
+  "workers_dev": true,
+  "observability": { "enabled": true }
+}

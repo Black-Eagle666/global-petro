@@ -6,7 +6,9 @@
 <title>GLOBAL PETRO s.r.o. — pracovníci a pracovní skupiny pro firmy v ČR</title>
 <meta name="description" content="GLOBAL PETRO s.r.o. zajišťuje spolehlivé pracovníky a pracovní skupiny pro stavebnictví, výrobu, potravinářství, zemědělství, svářečské práce i sklady po celé České republice.">
 
-<!-- ⚠️ Коли буде домен: додати canonical, og:url і og:image (1200×630) -->
+<link rel="canonical" href="https://globalpetro.cz/">
+<meta property="og:url" content="https://globalpetro.cz/">
+<!-- og:image (1200×630) ще немає -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="GLOBAL PETRO s.r.o.">
 <meta property="og:locale" content="cs_CZ">
@@ -1152,6 +1154,7 @@ header.stuck .btn--light{
   "@context": "https://schema.org",
   "@type": "EmploymentAgency",
   "name": "GLOBAL PETRO s.r.o.",
+  "url": "https://globalpetro.cz/",
   "description": "Zajištění pracovníků a pracovních skupin pro firmy po celé České republice.",
   "telephone": "+420777754927",
   "email": "email.global.petro@seznam.cz",
@@ -1534,6 +1537,7 @@ header.stuck .btn--light{
       <!-- Форма не має сервера: після перевірки відкриває пошту відвідувача
            з готовим листом на email.global.petro@seznam.cz (див. скрипт унизу). -->
       <form class="lead stepper" id="lead" novalidate>
+        <div aria-hidden="true" style="position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden"><label>Web <input name="website" id="f-website" tabindex="-1" autocomplete="off"></label></div>
         <div class="step-circle-container">
 
           <div class="step-indicator-row" id="step-row">
@@ -1589,7 +1593,7 @@ header.stuck .btn--light{
             </div>
 
             <div class="step-default step-done" data-step="4">
-              <p class="ok" id="l-ok">Otevřeli jsme vám e-mail s hotovou poptávkou — stačí ho odeslat. Pokud se nic neotevřelo, zavolejte nám na +420 777 754 927.</p>
+              <p class="ok" id="l-ok">Děkujeme, poptávku jsme přijali. Ozveme se co nejdříve — obvykle ještě týž pracovní den. Spěcháte? Volejte +420 777 754 927.</p>
             </div>
 
           </div>
@@ -1704,7 +1708,7 @@ header.stuck .btn--light{
         </ul>
 
         <h3>5. Komu údaje předáváme</h3>
-        <p>Údaje neprodáváme. Přístup k nim mohou mít naši zpracovatelé: poskytovatel hostingu GitHub, Inc. (GitHub Pages), poskytovatel e-mailu (Seznam.cz, a.s.), případně účetní a právní poradce.</p>
+        <p>Údaje neprodáváme. Přístup k nim mohou mít naši zpracovatelé: poskytovatel hostingu Cloudflare, Inc., služba pro doručení poptávek z formuláře e-mailem (Resend, servery v EU), poskytovatel e-mailu (Seznam.cz, a.s.), případně účetní a právní poradce.</p>
 
         <h3>6. Vaše práva</h3>
         <p>Máte právo na přístup k údajům, jejich opravu, výmaz, omezení zpracování, přenositelnost a právo vznést námitku. Souhlas můžete kdykoli odvolat. Napište nám na <a href="mailto:email.global.petro@seznam.cz">email.global.petro@seznam.cz</a>, odpovíme do jednoho měsíce.</p>
@@ -2636,16 +2640,34 @@ header.stuck .btn--light{
         if(!checkStep(n)){ render(n, n < step ? -1 : 1); return; }
       }
       var val = function(id){ return document.getElementById(id).value.trim(); };
-      var mailBody = "Jméno / firma: " + val("f-name") +
-        "\nTelefon: " + val("f-tel") +
-        "\nE-mail: " + val("f-mail") +
-        "\nObor: " + val("f-type") +
-        "\n\n" + val("f-msg");
-      location.href = "mailto:email.global.petro@seznam.cz" +
-        "?subject=" + encodeURIComponent("Poptávka pracovníků — " + val("f-type")) +
-        "&body=" + encodeURIComponent(mailBody);
-      render(TOTAL + 1, 1);
-      form.reset();
+      var data = {
+        name: val("f-name"), phone: val("f-tel"), email: val("f-mail"),
+        object_type: val("f-type"), message: val("f-msg"), website: val("f-website")
+      };
+      /* запасний шлях, якщо сервер недоступний: лист із готовою поптávkou з пошти відвідувача */
+      function mailFallback(){
+        var mailBody = "Jméno / firma: " + data.name + "\nTelefon: " + data.phone +
+          "\nE-mail: " + data.email + "\nObor: " + data.object_type + "\n\n" + data.message;
+        document.getElementById("l-ok").textContent = "Poptávku se nepodařilo odeslat přes web. Otevřeli jsme vám e-mail s hotovou poptávkou — stačí ho odeslat, nebo volejte +420 777 754 927.";
+        location.href = "mailto:email.global.petro@seznam.cz" +
+          "?subject=" + encodeURIComponent("Poptávka pracovníků — " + data.object_type) +
+          "&body=" + encodeURIComponent(mailBody);
+      }
+      var label = next.querySelector(".inner-content");
+      next.disabled = true;
+      if(label) label.textContent = "Odesílám…";
+      fetch("/api/poptavka", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      }).then(function(r){ return r.json().catch(function(){ return { ok:false }; }); })
+        .then(function(res){ if(!res || !res.ok) throw new Error(res && res.error || "send failed"); })
+        .catch(mailFallback)
+        .then(function(){
+          next.disabled = false;
+          render(TOTAL + 1, 1);
+          form.reset();
+        });
     });
 
     addEventListener("resize", function(){
