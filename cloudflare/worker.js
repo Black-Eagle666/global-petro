@@ -1,6 +1,7 @@
 // GLOBAL PETRO — static site + one endpoint that e-mails form enquiries to the company (via Resend).
 // Secret: RESEND_API_KEY (wrangler secret put RESEND_API_KEY). Static files are served from ./public.
 
+const CANONICAL_HOST = "globalpetro.cz";
 const TO = "email.global.petro@seznam.cz";
 const FROM = "GLOBAL PETRO web <poptavka@globalpetro.cz>";
 const ALLOWED_ORIGINS = ["https://globalpetro.cz", "https://www.globalpetro.cz", "https://global-petro.kolato90.workers.dev"];
@@ -88,6 +89,10 @@ async function handleEnquiry(request, env) {
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+    // One address for search engines: www and workers.dev permanently redirect to the main domain.
+    if (url.hostname !== CANONICAL_HOST) {
+      return Response.redirect(`https://${CANONICAL_HOST}${url.pathname}${url.search}`, 301);
+    }
     if (url.pathname === "/api/poptavka") {
       if (request.method !== "POST") return json(405, { ok: false, error: "Method not allowed" });
       return handleEnquiry(request, env);
