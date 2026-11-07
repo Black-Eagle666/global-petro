@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://globalpetro.cz/</loc><lastmod>2026-11-04</lastmod><changefreq>monthly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://globalpetro.cz/</loc><lastmod>2026-11-08</lastmod><changefreq>monthly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://globalpetro.cz/stavebnictvi</loc><lastmod>2026-11-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://globalpetro.cz/zednici</loc><lastmod>2026-11-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://globalpetro.cz/pily</loc><lastmod>2026-11-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://globalpetro.cz/vyroba-automotive</loc><lastmod>2026-11-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://globalpetro.cz/potravinarstvi</loc><lastmod>2026-11-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://globalpetro.cz/zemedelstvi</loc><lastmod>2026-11-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://globalpetro.cz/svareci</loc><lastmod>2026-11-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://globalpetro.cz/sklady</loc><lastmod>2026-11-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://globalpetro.cz/jak-to-funguje</loc><lastmod>2026-11-08</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://globalpetro.cz/caste-dotazy</loc><lastmod>2026-11-08</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
 </urlset>

@@ -445,7 +445,7 @@ footer{padding:clamp(56px,7vw,96px) 0 28px}
   font-size:14px;line-height:1.6;color:rgba(255,255,255,.62);
 }
 .foot-links{
-  display:grid;grid-template-columns:auto auto;justify-content:start;
+  display:grid;grid-template-columns:auto auto auto;justify-content:start;
   gap:clamp(26px,5vw,70px);align-items:start;
   margin-top:clamp(44px,6vw,84px);
 }
@@ -582,6 +582,8 @@ footer{padding:clamp(56px,7vw,96px) 0 28px}
   transition:color .25s;
 }
 .card-toggle:hover{color:var(--ink)}
+.card-title{text-decoration:none;transition:color .25s}.card-title:hover{color:var(--accent)}
+.card-page{margin-top:18px}
 .card-toggle i{
   position:relative;width:18px;height:18px;flex:0 0 18px;
   border:1px solid currentColor;border-radius:50%;
@@ -1314,7 +1316,7 @@ header.stuck .btn--light{
         <div class="card-media"><img loading="lazy" src="img/obor-stavby.webp" alt="Stavební dělníci v přilbách"></div>
         <div class="card-body">
           <span class="status status--live">Jednotlivci i skupiny</span>
-          <h3>Stavebnictví a rekonstrukce</h3>
+          <h3><a class="card-title" href="/stavebnictvi">Stavebnictví a rekonstrukce</a></h3>
           <p class="place"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg> Celá ČR</p>
           <div class="card-more">
           <p class="desc">Pomocní i kvalifikovaní stavební dělníci pro novostavby, rekonstrukce a dokončovací práce.</p>
@@ -1322,6 +1324,7 @@ header.stuck .btn--light{
             <div><dt>Pozice</dt><dd>Stavební dělníci</dd></div>
             <div><dt>Nasazení</dt><dd>Jednotlivci i party</dd></div>
           </dl>
+          <a class="link card-page" href="/stavebnictvi">Více o oboru →</a>
           </div>
         </div>
       </article>
@@ -1330,7 +1333,7 @@ header.stuck .btn--light{
         <div class="card-media"><img loading="lazy" src="img/obor-zednici.webp" alt="Dělník na stavbě"></div>
         <div class="card-body">
           <span class="status">Řemeslníci</span>
-          <h3>Zednické a stavební práce</h3>
+          <h3><a class="card-title" href="/zednici">Zednické a stavební práce</a></h3>
           <p class="place"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg> Celá ČR</p>
           <div class="card-more">
           <p class="desc">Zedníci a další stavební profese pro zdění, omítky, betonáže a další práce na stavbě.</p>
@@ -1338,6 +1341,7 @@ header.stuck .btn--light{
             <div><dt>Pozice</dt><dd>Zedníci, pomocníci</dd></div>
             <div><dt>Nasazení</dt><dd>Jednotlivci i party</dd></div>
           </dl>
+          <a class="link card-page" href="/zednici">Více o oboru →</a>
           </div>
         </div>
       </article>
@@ -1346,7 +1350,7 @@ header.stuck .btn--light{
         <div class="card-media"><img loading="lazy" src="img/obor-pily.webp" alt="Kmeny dřeva na skládce"></div>
         <div class="card-body">
           <span class="status status--live">Jednotlivci i skupiny</span>
-          <h3>Pily a zpracování dřeva</h3>
+          <h3><a class="card-title" href="/pily">Pily a zpracování dřeva</a></h3>
           <p class="place"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg> Celá ČR</p>
           <div class="card-more">
           <p class="desc">Pracovníci pro pily a dřevozpracující výrobu — manipulace s kulatinou, obsluha linek, třídění řeziva.</p>
@@ -1354,6 +1358,7 @@ header.stuck .btn--light{
             <div><dt>Pozice</dt><dd>Dělníci na pile</dd></div>
             <div><dt>Nasazení</dt><dd>Směnný provoz</dd></div>
           </dl>
+          <a class="link card-page" href="/pily">Více o oboru →</a>
           </div>
         </div>
       </article>
@@ -1362,7 +1367,7 @@ header.stuck .btn--light{
         <div class="card-media"><img loading="lazy" src="img/obor-vyroba.webp" alt="Pracovník u stroje ve výrobě"></div>
         <div class="card-body">
           <span class="status">Výroba</span>
-          <h3>Výrobní a automobilové závody</h3>
+          <h3><a class="card-title" href="/vyroba-automotive">Výrobní a automobilové závody</a></h3>
           <p class="place"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg> Celá ČR</p>
           <div class="card-more">
           <p class="desc">Operátoři výroby a pomocní pracovníci pro výrobní linky a dodavatele automobilového průmyslu.</p>
@@ -1370,6 +1375,7 @@ header.stuck .btn--light{
             <div><dt>Pozice</dt><dd>Operátoři výroby</dd></div>
             <div><dt>Nasazení</dt><dd>Směnný provoz</dd></div>
           </dl>
+          <a class="link card-page" href="/vyroba-automotive">Více o oboru →</a>
           </div>
         </div>
       </article>
@@ -1378,7 +1384,7 @@ header.stuck .btn--light{
         <div class="card-media"><img loading="lazy" src="img/obor-potraviny.webp" alt="Pracovnice v potravinářském provozu"></div>
         <div class="card-body">
           <span class="status status--live">Jednotlivci i skupiny</span>
-          <h3>Potravinářský průmysl</h3>
+          <h3><a class="card-title" href="/potravinarstvi">Potravinářský průmysl</a></h3>
           <p class="place"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg> Celá ČR</p>
           <div class="card-more">
           <p class="desc">Pracovníci pro zpracování masa, balení a další provozy potravinářské výroby.</p>
@@ -1386,6 +1392,7 @@ header.stuck .btn--light{
             <div><dt>Pozice</dt><dd>Dělníci ve výrobě</dd></div>
             <div><dt>Nasazení</dt><dd>Směnný provoz</dd></div>
           </dl>
+          <a class="link card-page" href="/potravinarstvi">Více o oboru →</a>
           </div>
         </div>
       </article>
@@ -1394,7 +1401,7 @@ header.stuck .btn--light{
         <div class="card-media"><img loading="lazy" src="img/obor-zemedelstvi.webp" alt="Krávy na farmě"></div>
         <div class="card-body">
           <span class="status">Zemědělství</span>
-          <h3>Zemědělství a živočišná výroba</h3>
+          <h3><a class="card-title" href="/zemedelstvi">Zemědělství a živočišná výroba</a></h3>
           <p class="place"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg> Celá ČR</p>
           <div class="card-more">
           <p class="desc">Pracovníci pro rostlinnou i živočišnou výrobu — péče o zvířata, sezónní a polní práce.</p>
@@ -1402,6 +1409,7 @@ header.stuck .btn--light{
             <div><dt>Pozice</dt><dd>Zemědělští dělníci</dd></div>
             <div><dt>Nasazení</dt><dd>Celoročně i sezónně</dd></div>
           </dl>
+          <a class="link card-page" href="/zemedelstvi">Více o oboru →</a>
           </div>
         </div>
       </article>
@@ -1410,7 +1418,7 @@ header.stuck .btn--light{
         <div class="card-media"><img loading="lazy" src="img/obor-svareci.webp" alt="Svářeč při práci"></div>
         <div class="card-body">
           <span class="status status--live">Řemeslníci</span>
-          <h3>Svářeči a řemeslníci</h3>
+          <h3><a class="card-title" href="/svareci">Svářeči a řemeslníci</a></h3>
           <p class="place"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg> Celá ČR</p>
           <div class="card-more">
           <p class="desc">Svářeči, zámečníci a další řemeslné profese pro výrobu, stavby i montáže.</p>
@@ -1418,6 +1426,7 @@ header.stuck .btn--light{
             <div><dt>Pozice</dt><dd>Svářeči, zámečníci</dd></div>
             <div><dt>Nasazení</dt><dd>Jednotlivci i party</dd></div>
           </dl>
+          <a class="link card-page" href="/svareci">Více o oboru →</a>
           </div>
         </div>
       </article>
@@ -1426,7 +1435,7 @@ header.stuck .btn--light{
         <div class="card-media"><img loading="lazy" src="img/obor-sklady.webp" alt="Regály ve skladu"></div>
         <div class="card-body">
           <span class="status">Logistika</span>
-          <h3>Sklady a logistika</h3>
+          <h3><a class="card-title" href="/sklady">Sklady a logistika</a></h3>
           <p class="place"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg> Celá ČR</p>
           <div class="card-more">
           <p class="desc">Skladníci, vychystávači a pomocní pracovníci pro sklady a logistická centra.</p>
@@ -1434,6 +1443,7 @@ header.stuck .btn--light{
             <div><dt>Pozice</dt><dd>Skladníci</dd></div>
             <div><dt>Nasazení</dt><dd>Směnný provoz</dd></div>
           </dl>
+          <a class="link card-page" href="/sklady">Více o oboru →</a>
           </div>
         </div>
       </article>
@@ -1574,6 +1584,21 @@ header.stuck .btn--light{
           <li><a href="#about">O nás</a></li>
           <li><a href="#approach">Proč my</a></li>
           <li><a href="#projects">Obory</a></li>
+          <li><a href="/jak-to-funguje">Jak to funguje</a></li>
+          <li><a href="/caste-dotazy">Časté dotazy</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Obory</h3>
+        <ul>
+          <li><a href="/stavebnictvi">Stavebnictví a rekonstrukce</a></li>
+          <li><a href="/zednici">Zednické a stavební práce</a></li>
+          <li><a href="/pily">Pily a zpracování dřeva</a></li>
+          <li><a href="/vyroba-automotive">Výrobní a automobilové závody</a></li>
+          <li><a href="/potravinarstvi">Potravinářský průmysl</a></li>
+          <li><a href="/zemedelstvi">Zemědělství a živočišná výroba</a></li>
+          <li><a href="/svareci">Svářeči a řemeslníci</a></li>
+          <li><a href="/sklady">Sklady a logistika</a></li>
         </ul>
       </div>
       <div>
@@ -2563,6 +2588,14 @@ header.stuck .btn--light{
 
     render(1, 1, true);   /* silent: без фокуса, інакше сторінка стрибне до форми */
   })();
+})();
+</script>
+<script>
+/* ?obor=… з підсторінок галузей: одразу вибрати галузь у формі */
+(function(){
+  var o = new URLSearchParams(location.search).get("obor"), sel = document.getElementById("f-type");
+  if(!o || !sel) return;
+  for(var i = 0; i < sel.options.length; i++) if(sel.options[i].text === o){ sel.selectedIndex = i; break; }
 })();
 </script>
 </body>
