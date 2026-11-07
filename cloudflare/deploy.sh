@@ -6,7 +6,7 @@ STAGE="$(mktemp -d)"
 trap 'rm -rf "$STAGE"' EXIT
 mkdir -p "$STAGE/public"
 cd "$SITE"
-git archive HEAD index.html favicon.ico apple-touch-icon.png robots.txt sitemap.xml google881e039a561c0d3b.html | tar -x -C "$STAGE/public"
+git archive HEAD index.html _headers img favicon.ico apple-touch-icon.png robots.txt sitemap.xml google881e039a561c0d3b.html | tar -x -C "$STAGE/public"
 git archive HEAD cloudflare/worker.js cloudflare/wrangler.jsonc | tar -x -C "$STAGE" --strip-components=1
 ls -a "$STAGE/public"
 cd "$STAGE"
