@@ -8,7 +8,7 @@ from pathlib import Path
 from urllib.parse import quote
 
 sys.path.insert(0, str(Path(__file__).parent))
-from pages import COMMON_FAQ, EMAIL, OBORY, PHONE, PHONE_TEL, SITE, STEPS  # noqa: E402
+from pages import COMMON_FAQ, COMPANY, EMAIL, OBORY, PHONE, PHONE_TEL, SITE, STEPS  # noqa: E402
 
 CSS = """
 :root{--ink:#0E1518;--ink-soft:#28333A;--paper:#FBFAF9;--stone:#EDEAE4;--muted:#646C72;--line:#DFDCD5;--accent:#2F5D62;
@@ -73,7 +73,19 @@ FONT = ('<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="p
         '<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..600&display=swap" onload="this.onload=null;this.rel=\'stylesheet\'">'
         '<noscript><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..600&display=swap" rel="stylesheet"></noscript>')
 
-ORG = {"@type": "EmploymentAgency", "@id": SITE + "/#firma", "name": "GLOBAL PETRO s.r.o.", "url": SITE + "/", "telephone": PHONE_TEL, "email": EMAIL}
+ADDRESS = {"@type": "PostalAddress", "streetAddress": COMPANY["street"], "postalCode": COMPANY["zip"],
+           "addressLocality": COMPANY["locality"], "addressCountry": "CZ"}
+ORG = {"@type": "EmploymentAgency", "@id": SITE + "/#firma", "name": COMPANY["name"], "url": SITE + "/", "telephone": PHONE_TEL,
+       "email": EMAIL, "address": ADDRESS}
+ORG_FULL = ORG | {
+    "legalName": COMPANY["name"],
+    "identifier": {"@type": "PropertyValue", "propertyID": "IČO", "value": COMPANY["ico"]},
+    "areaServed": {"@type": "Country", "name": "Česká republika"},
+    "contactPoint": {"@type": "ContactPoint", "contactType": "poptávky pracovníků", "telephone": PHONE_TEL, "email": EMAIL,
+                     "areaServed": "CZ"},
+    "knowsAbout": [o["select"] for o in OBORY],
+}
+OG_DEFAULT = "og-image.jpg"
 
 
 def e(text: str) -> str:
@@ -126,8 +138,9 @@ def related_block(current: str | None) -> str:
 def header(select: str | None) -> str:
     return ('<header><div class="container"><a class="brand" href="/"><span class="mark">G</span>'
             '<span><b>GLOBAL PETRO</b><small>Pracovní síla · Česko</small></span></a>'
-            '<nav aria-label="Hlavní menu"><ul><li><a href="/#about">O nás</a></li><li><a href="/#projects">Obory</a></li>'
-            '<li><a href="/jak-to-funguje">Jak to funguje</a></li><li><a href="/caste-dotazy">Časté dotazy</a></li></ul></nav>'
+            '<nav aria-label="Hlavní menu"><ul><li><a href="/o-nas">O nás</a></li><li><a href="/#projects">Obory</a></li>'
+            '<li><a href="/jak-to-funguje">Jak to funguje</a></li><li><a href="/caste-dotazy">Časté dotazy</a></li>'
+            '<li><a href="/kontakt">Kontakt</a></li></ul></nav>'
             f'<a class="btn" href="{poptat_href(select)}">Poptat pracovníky</a></div></header>')
 
 
@@ -138,13 +151,16 @@ def footer() -> str:
             '<p>GLOBAL PETRO s.r.o.<br>Kpt. Stránského 998/3, 198 00 Praha 9<br>IČO 07446969</p></div>'
             f'<div><h3>Obory</h3><ul>{obory}</ul></div>'
             f'<div><h3>Kontakt</h3><ul><li><a href="tel:{PHONE_TEL}">{PHONE}</a></li><li><a href="mailto:{EMAIL}">{EMAIL}</a></li>'
+            '<li><a href="/kontakt">Kontakt</a></li><li><a href="/o-nas">O nás</a></li><li><a href="/pracovni-skupiny">Pracovní skupiny</a></li>'
             '<li><a href="/jak-to-funguje">Jak to funguje</a></li><li><a href="/caste-dotazy">Časté dotazy</a></li></ul></div></div>'
             '<div class="foot-bot">© 2026 GLOBAL PETRO s.r.o. Pracovníky zajišťujeme firmám po celé České republice.</div></div></footer>')
 
 
 def page(*, slug: str, title: str, desc: str, body: str, schemas: list[dict], select: str | None, og_img: str | None) -> str:
     url = f"{SITE}/{slug}"
-    og = f'<meta property="og:image" content="{SITE}/img/{og_img}">' if og_img else ""
+    og_src = f"{SITE}/img/{og_img}" if og_img else f"{SITE}/{OG_DEFAULT}"
+    og = (f'<meta property="og:image" content="{og_src}">'
+          + ("" if og_img else '<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">'))
     return f"""<!DOCTYPE html>
 <html lang="cs">
 <head>
@@ -155,7 +171,7 @@ def page(*, slug: str, title: str, desc: str, body: str, schemas: list[dict], se
 <link rel="canonical" href="{url}">
 <meta property="og:url" content="{url}"><meta property="og:type" content="website"><meta property="og:site_name" content="GLOBAL PETRO s.r.o.">
 <meta property="og:locale" content="cs_CZ"><meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}">{og}
-<meta name="twitter:card" content="summary">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="favicon.ico" sizes="32x32"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="theme-color" content="#0E1518">
 {FONT}
 <style>{CSS}</style>
@@ -255,11 +271,105 @@ def faq_page() -> str:
                 body=body, schemas=[data, crumbs_ld], select=None, og_img=None)
 
 
+def obory_links() -> str:
+    return "".join(f'<a href="/{o["slug"]}">{e(o["select"])}</a>' for o in OBORY)
+
+
+def about_page() -> str:
+    crumbs_html, crumbs_ld = breadcrumbs([("Úvod", "/"), ("O nás", "/o-nas")])
+    c = COMPANY
+    facts = [("Obchodní firma", c["name"]), ("IČO", c["ico"]), ("Sídlo", f'{c["street"]}, {c["zip"]} {c["city"]}'),
+             ("Zápis v obchodním rejstříku", c["register"]), ("Jednatel", c["jednatel"]), ("Působnost", "celá Česká republika")]
+    facts_html = "".join(f"<li><span><b>{e(k)}:</b> {e(v)}</span></li>" for k, v in facts)
+    body = (crumbs_html +
+            '<section class="hero"><div class="container"><p class="eyebrow">O nás</p>'
+            '<h1>GLOBAL PETRO s.r.o. — pracovníci a pracovní skupiny pro firmy v ČR</h1>'
+            '<p class="lede">Firmám po celé České republice dodáváme spolehlivé pracovníky — od jednoho řemeslníka po celou pracovní skupinu, '
+            'sestavenou přesně podle vašich požadavků.</p>'
+            f'<a class="btn" href="{poptat_href(None)}">Poptat pracovníky →</a></div></section>'
+            '<section class="block"><div class="container two">'
+            '<div><p class="eyebrow">Komu pomáháme</p><h2>Firmám z osmi oborů</h2>'
+            '<p>Stavebním firmám, pilám a dřevozpracujícím provozům, výrobním a automobilovým závodům, potravinářům, '
+            'zemědělcům i skladům a logistickým centrům.</p>'
+            '<p class="eyebrow" style="margin-top:34px">Jak pracujeme</p>'
+            '<p>Nejdřív si ujasníme, koho přesně potřebujete: profese, počet lidí, místo a termín nástupu. Potom vybereme pracovníky, '
+            'kteří odpovídají vašim požadavkům. Nemusíte obvolávat desítky lidí ani skládat partu po jednom — máte jeden kontakt pro celé obsazení.</p></div>'
+            f'<div><p class="eyebrow">Údaje o společnosti</p><h2>Kdo jsme</h2><ul class="list">{facts_html}</ul></div>'
+            '</div></section>'
+            f'<section class="block"><div class="container"><h2>Obory, pro které zajišťujeme pracovníky</h2><div class="related">{obory_links()}</div></div></section>'
+            + cta_block(None))
+    about = {"@context": "https://schema.org", "@type": "AboutPage", "url": f"{SITE}/o-nas", "name": "O společnosti GLOBAL PETRO s.r.o.",
+             "inLanguage": "cs", "mainEntity": ORG_FULL}
+    return page(slug="o-nas", title="O nás — GLOBAL PETRO s.r.o., pracovníci pro firmy v ČR",
+                desc="GLOBAL PETRO s.r.o. (IČO 07446969, Praha 9) zajišťuje firmám po celé ČR pracovníky i celé pracovní skupiny pro osm oborů. Kdo jsme a jak pracujeme.",
+                body=body, schemas=[about, crumbs_ld], select=None, og_img=None)
+
+
+def contact_page() -> str:
+    crumbs_html, crumbs_ld = breadcrumbs([("Úvod", "/"), ("Kontakt", "/kontakt")])
+    c = COMPANY
+    body = (crumbs_html +
+            '<section class="hero"><div class="container"><p class="eyebrow">Kontakt</p>'
+            '<h1>Kontakt na GLOBAL PETRO</h1>'
+            '<p class="lede">Napište nebo zavolejte, koho potřebujete — profesi, počet lidí, místo a termín nástupu. '
+            'Na poptávku reagujeme co nejdříve, obvykle ještě týž pracovní den.</p>'
+            f'<div class="cta-row" style="margin-top:0"><a class="btn" href="tel:{PHONE_TEL}">Zavolat {PHONE}</a>'
+            f'<a class="btn btn--ghost" href="mailto:{EMAIL}">Napsat e-mail</a></div></div></section>'
+            '<section class="block"><div class="container two">'
+            f'<div><p class="eyebrow">Telefon a e-mail</p><h2>Poptávky pracovníků</h2><ul class="list">'
+            f'<li><a href="tel:{PHONE_TEL}">{PHONE}</a></li><li><a href="mailto:{EMAIL}">{EMAIL}</a></li>'
+            f'<li><a href="{poptat_href(None)}">Poptávkový formulář na webu</a></li></ul></div>'
+            f'<div><p class="eyebrow">Fakturační údaje</p><h2>{e(c["name"])}</h2><ul class="list">'
+            f'<li>{e(c["street"])}, {e(c["zip"])} {e(c["city"])}</li><li>IČO {e(c["ico"])}</li><li>{e(c["register"])}</li></ul></div>'
+            '</div></section>' + steps_block())
+    contact = {"@context": "https://schema.org", "@type": "ContactPage", "url": f"{SITE}/kontakt", "name": "Kontakt na GLOBAL PETRO",
+               "inLanguage": "cs", "mainEntity": ORG_FULL}
+    return page(slug="kontakt", title="Kontakt — poptávka pracovníků | GLOBAL PETRO s.r.o.",
+                desc=f"Kontakt na GLOBAL PETRO s.r.o.: telefon {PHONE}, e-mail {EMAIL}, sídlo Praha 9, IČO 07446969. Poptejte pracovníky i celé skupiny.",
+                body=body, schemas=[contact, crumbs_ld], select=None, og_img=None)
+
+
+def groups_page() -> str:
+    crumbs_html, crumbs_ld = breadcrumbs([("Úvod", "/"), ("Pracovní skupiny", "/pracovni-skupiny")])
+    faq_html, faq_ld = faq_block(COMMON_FAQ + [
+        ("Pro které obory skupiny sestavujete?",
+         "Pro stavebnictví a rekonstrukce, zednické práce, pily a zpracování dřeva, výrobní a automobilové závody, potravinářský průmysl, "
+         "zemědělství, svářečské a řemeslné profese a pro sklady a logistiku."),
+        ("Co mám uvést, když potřebuji celou partu?",
+         "Profese a počet lidí v partě, místo výkonu práce, termín nástupu, délku zakázky, pracovní dobu a požadavky na kvalifikaci."),
+    ])
+    why = [("Jeden kontakt pro celé obsazení", "Nemusíte obvolávat desítky lidí ani skládat partu po jednom. Řeknete, koho potřebujete, a my vám pracovníky zajistíme."),
+           ("Skupina podle zakázky", "Profese, počet lidí, místo výkonu práce i termín nástupu — partu skládáme přesně pro konkrétní zakázku nebo provoz."),
+           ("Po celé České republice", "Pracovní skupiny zajišťujeme firmám v celé ČR. Místo výkonu práce stačí uvést v poptávce.")]
+    body = (crumbs_html +
+            '<section class="hero"><div class="container"><p class="eyebrow">Pracovní skupiny · Celá ČR</p>'
+            '<h1>Pracovní skupiny a celé party pro vaši firmu</h1>'
+            '<p class="lede">Potřebujete víc lidí najednou? Sestavíme celou pracovní skupinu podle vaší zakázky — od několika pomocníků '
+            'po partu kvalifikovaných řemeslníků, pod jedním kontaktem.</p>'
+            '<ul class="tags"><li>Celé party</li><li>Celá Česká republika</li><li>Jeden kontakt pro celé obsazení</li></ul>'
+            f'<a class="btn" href="{poptat_href(None)}">Poptat pracovní skupinu →</a></div></section>'
+            '<section class="block"><div class="container two"><div><p class="eyebrow">Proč skupina od nás</p><h2>Na čem stavíme</h2>'
+            + "".join(f"<h3 style='margin-top:22px'>{e(t)}</h3><p>{e(d)}</p>" for t, d in why) +
+            '</div><div><p class="eyebrow">Obory</p><h2>Pro koho skupiny sestavujeme</h2><ul class="list">'
+            + "".join(f'<li><a href="/{o["slug"]}">{e(o["select"])}</a></li>' for o in OBORY) +
+            '</ul></div></div></section>' + steps_block() + faq_html + cta_block(None))
+    service = {"@context": "https://schema.org", "@type": "Service", "name": "Pracovní skupiny pro firmy",
+               "serviceType": "Zajištění pracovních skupin", "url": f"{SITE}/pracovni-skupiny",
+               "description": "Sestavení celých pracovních skupin podle zakázky pro firmy po celé České republice.",
+               "areaServed": {"@type": "Country", "name": "Česká republika"}, "provider": ORG}
+    return page(slug="pracovni-skupiny", title="Pracovní skupiny a party pro firmy po celé ČR | GLOBAL PETRO",
+                desc="Celé pracovní skupiny a party pro stavby, výrobu, pily, zemědělství i sklady. Sestavíme je podle vaší zakázky — jeden kontakt pro celé obsazení.",
+                body=body, schemas=[service, crumbs_ld, faq_ld], select=None, og_img=None)
+
+
 def main(site_dir: str) -> None:
     out = Path(site_dir)
     files = {o["slug"]: obor_page(o) for o in OBORY}
     files["jak-to-funguje"] = how_page()
     files["caste-dotazy"] = faq_page()
+    files["o-nas"] = about_page()
+    files["kontakt"] = contact_page()
+    files["pracovni-skupiny"] = groups_page()
     for slug, html in files.items():
         (out / f"{slug}.html").write_text(html, encoding="utf-8")
         print(f"{slug}.html  {len(html.encode()) // 1024} KB")

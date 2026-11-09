@@ -5,6 +5,18 @@ PHONE = "+420 777 754 927"
 PHONE_TEL = "+420777754927"
 EMAIL = "email.global.petro@seznam.cz"
 
+# From the Czech commercial register (obchodní rejstřík), as already shown in the site footer and legal texts.
+COMPANY = {
+    "name": "GLOBAL PETRO s.r.o.",
+    "ico": "07446969",
+    "street": "Kpt. Stránského 998/3",
+    "zip": "198 00",
+    "city": "Praha 9",
+    "locality": "Praha",
+    "register": "Městský soud v Praze, oddíl C, vložka 301198",
+    "jednatel": "Petro Hasynets",
+}
+
 COMMON_FAQ = [
     ("Zajistíte jednoho pracovníka i celou partu?",
      "Ano. Zajišťujeme jednotlivce i celé pracovní skupiny — podle toho, kolik lidí vaše zakázka nebo provoz potřebuje."),
